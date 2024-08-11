@@ -6,6 +6,9 @@ local M = {}
 
 M.ui = {
 	theme = "chadracula",
+  -- make backround transparent
+  transparency = true
+
 
 	-- hl_override = {
 	-- 	Comment = { italic = true },
