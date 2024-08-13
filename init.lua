@@ -88,6 +88,7 @@ prettier.setup({
     "typescript",
     "typescriptreact",
     "yaml",
+    "swift",
   },
   ["null-ls"] = {
     condition = function()
@@ -123,3 +124,6 @@ prettier.setup({
     vue_indent_script_and_style = false,
   },
 })
+
+-- display relative line numbers 
+vim.opt.relativenumber = true
