@@ -40,4 +40,5 @@ map({ "n", "t" }, "<leader>h", function()
   require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
 end, { desc = "Terminal Toggle horizontal term" })
 
-
+-- toggle ntree
+map({ "n", "t", "v" }, "<leader>n", ":NvimTreeToggle<CR>")
