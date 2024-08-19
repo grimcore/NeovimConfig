@@ -116,4 +116,10 @@ return {
   --   -- see below for full list of options 👇
   -- },
   -- },
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {},
+  },
 }

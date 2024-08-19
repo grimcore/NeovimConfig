@@ -5,7 +5,6 @@
 local M = {}
 
 M.ui = {
-	theme = "catppuccin",
   -- make backround transparent
   transparency = true,
 
