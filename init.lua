@@ -500,5 +500,12 @@ require('render-markdown').setup({
     -- See 'Custom Handlers' document for more info
     custom_handlers = {},
 })
+
+-- -- pywall
+-- local nvim_config_path = vim.fn.stdpath('config')
+-- local python_script = nvim_config_path .. "/pywal/chadwal.py"
+-- os.execute("python3 " .. python_script .. " &> /dev/null &")
+
+
 -- display relative line numbers 
 vim.opt.relativenumber = true
