@@ -20,8 +20,7 @@ require("lazy").setup({
     lazy = false,
     branch = "v2.5",
     import = "nvchad.plugins",
-    config = function()
-      require "options"
+    config = function() require "options"
     end,
   },
 
@@ -126,25 +125,92 @@ prettier.setup({
 })
 
 require('render-markdown').setup({
-    link = {
-        -- Turn on / off inline link icon rendering
+    -- Whether Markdown should be rendered by default or not
+    enabled = true,
+    -- Maximum file size (in MB) that this plugin will attempt to render
+    -- Any file larger than this will effectively be ignored
+    max_file_size = 10.0,
+    -- Milliseconds that must pass before updating marks, updates occur
+    -- within the context of the visible window, not the entire buffer
+    debounce = 100,
+    -- Pre configured settings that will attempt to mimic various target
+    -- user experiences. Any user provided settings will take precedence.
+    --  obsidian: mimic Obsidian UI
+    --  lazy:     will attempt to stay up to date with LazyVim configuration
+    --  none:     does nothing
+    preset = 'none',
+    -- Capture groups that get pulled from markdown
+    markdown_query = [[
+        (atx_heading [
+            (atx_h1_marker)
+            (atx_h2_marker)
+            (atx_h3_marker)
+            (atx_h4_marker)
+            (atx_h5_marker)
+            (atx_h6_marker)
+        ] @heading)
+
+        (thematic_break) @dash
+
+        (fenced_code_block) @code
+
+        [
+            (list_marker_plus)
+            (list_marker_minus)
+            (list_marker_star)
+        ] @list_marker
+
+        (task_list_marker_unchecked) @checkbox_unchecked
+        (task_list_marker_checked) @checkbox_checked
+
+        (block_quote) @quote
+
+        (pipe_table) @table
+    ]],
+    -- Capture groups that get pulled from quote nodes
+    markdown_quote_query = [[
+        [
+            (block_quote_marker)
+            (block_continuation)
+        ] @quote_marker
+    ]],
+    -- Capture groups that get pulled from inline markdown
+    inline_query = [[
+        (code_span) @code
+
+        (shortcut_link) @shortcut
+
+        [(inline_link) (full_reference_link) (image)] @link
+    ]],
+    -- The level of logs to write to file: vim.fn.stdpath('state') .. '/render-markdown.log'
+    -- Only intended to be used for plugin development / debugging
+    log_level = 'error',
+    -- Filetypes this plugin will run on
+    file_types = { 'markdown' },
+    -- Vim modes that will show a rendered view of the markdown file
+    -- All other modes will be uneffected by this plugin
+    render_modes = { 'n', 'c' },
+    -- Set to avoid seeing warnings for conflicts in health check
+    acknowledge_conflicts = false,
+    anti_conceal = {
+        -- This enables hiding any added text on the line the cursor is on
         enabled = true,
-        -- Inlined with 'image' elements
-        image = '󰥶 ',
-        -- Fallback icon for 'inline_link' elements
-        hyperlink = '󰌹 ',
-        -- Applies to the fallback inlined icon
-        highlight = 'RenderMarkdownLink',
-        -- Define custom destination patterns so icons can quickly inform you of what a link
-        -- contains. Applies to 'inline_link' and wikilink nodes.
-        -- Can specify as many additional values as you like following the 'web' pattern below
-        --   The key in this case 'web' is for healthcheck and to allow users to change its values
-        --   'pattern':   Matched against the destination text see :h lua-pattern
-        --   'icon':      Gets inlined before the link text
-        --   'highlight': Highlight for the 'icon'
-        custom = {
-            web = { pattern = '^http[s]?://', icon = '󰖟 ', highlight = 'RenderMarkdownLink' },
-        },
+        -- Number of lines above cursor to show
+        above = 0,
+        -- Number of lines below cursor to show
+        below = 0,
+    },
+    latex = {
+        -- Whether LaTeX should be rendered, mainly used for health check
+        enabled = true,
+        -- Executable used to convert latex formula to rendered unicode
+        converter = 'latex2text',
+        -- Highlight for LaTeX blocks
+        highlight = 'RenderMarkdownMath',
+        -- Amount of empty lines above LaTeX blocks
+        top_pad = 0,
+        -- Amount of empty lines below LaTeX blocks
+        bottom_pad = 0,
     },
     heading = {
         -- Turn on / off heading icon & background rendering
@@ -374,13 +440,65 @@ require('render-markdown').setup({
         example = { raw = '[!EXAMPLE]', rendered = '󰉹 Example', highlight = 'RenderMarkdownHint' },
         quote = { raw = '[!QUOTE]', rendered = '󱆨 Quote', highlight = 'RenderMarkdownQuote' },
     },
+    link = {
+        -- Turn on / off inline link icon rendering
+        enabled = true,
+        -- Inlined with 'image' elements
+        image = '󰥶 ',
+        -- Fallback icon for 'inline_link' elements
+        hyperlink = '󰌹 ',
+        -- Applies to the fallback inlined icon
+        highlight = 'RenderMarkdownLink',
+        -- Define custom destination patterns so icons can quickly inform you of what a link
+        -- contains. Applies to 'inline_link' and wikilink nodes.
+        -- Can specify as many additional values as you like following the 'web' pattern below
+        --   The key in this case 'web' is for healthcheck and to allow users to change its values
+        --   'pattern':   Matched against the destination text see :h lua-pattern
+        --   'icon':      Gets inlined before the link text
+        --   'highlight': Highlight for the 'icon'
+        custom = {
+            web = { pattern = '^http[s]?://', icon = '󰖟 ', highlight = 'RenderMarkdownLink' },
+        },
+    },
     sign = {
         -- Turn on / off sign rendering
         enabled = true,
         -- Applies to background of sign text
         highlight = 'RenderMarkdownSign',
     },
+    -- Window options to use that change between rendered and raw view
+    win_options = {
+        -- See :h 'conceallevel'
+        conceallevel = {
+            -- Used when not being rendered, get user setting
+            default = vim.api.nvim_get_option_value('conceallevel', {}),
+            -- Used when being rendered, concealed text is completely hidden
+            rendered = 3,
+        },
+        -- See :h 'concealcursor'
+        concealcursor = {
+            -- Used when not being rendered, get user setting
+            default = vim.api.nvim_get_option_value('concealcursor', {}),
+            -- Used when being rendered, disable concealing text in all modes
+            rendered = '',
+        },
+    },
+    -- More granular configuration mechanism, allows different aspects of buffers
+    -- to have their own behavior. Values default to the top level configuration
+    -- if no override is provided. Supports the following fields:
+    --   enabled, max_file_size, debounce, render_modes, anti_conceal, heading, code,
+    --   dash, bullet, checkbox, quote, pipe_table, callout, link, sign, win_options
+    overrides = {
+        -- Overrides for different buftypes, see :h 'buftype'
+        buftype = {
+            nofile = {
+                sign = { enabled = false },
+            },
+        },
+    },
+    -- Mapping from treesitter language to user defined handlers
+    -- See 'Custom Handlers' document for more info
+    custom_handlers = {},
 })
-
 -- display relative line numbers 
 vim.opt.relativenumber = true
