@@ -32,8 +32,12 @@ map("n", "<leader>ll", ":vsplit | terminal ollama run llama3<CR>i")
 
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
--- floating terminal 
-map({ "n", "t" }, "<leader>i", function()
-  require("nvchad.term").toggle { pos = "float", id = "floatTerm", border="rounded" }
-end, { desc = "Terminal Toggle Floating term" })
+-- toggle terminal 
+map({ "n", "t" }, "<leader>v", function()
+  require("nvchad.term").toggle { pos = "vsp", id = "verticalTerm" }
+end, { desc = "Terminal Toggle vertical term" })
+map({ "n", "t" }, "<leader>h", function()
+  require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
+end, { desc = "Terminal Toggle horizontal term" })
+
 
