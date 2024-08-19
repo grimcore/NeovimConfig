@@ -501,70 +501,8 @@ require('render-markdown').setup({
     custom_handlers = {},
 })
 
--- -- pywall
--- local nvim_config_path = vim.fn.stdpath('config')
--- local python_script = nvim_config_path .. "/pywal/chadwal.py"
--- os.execute("python3 " .. python_script .. " &> /dev/null &")
-
-
 -- display relative line numbers 
 vim.opt.relativenumber = true
-
-
--- -- tokyonight
--- vim.cmd[[colorscheme tokyonight-moon]]
--- require("tokyonight").setup({
---   on_highlights = function(hl, c)
---     local prompt = "#2d3149"
---     hl.TelescopeNormal = {
---       bg = c.bg_dark,
---       fg = c.fg_dark,
---     }
---     hl.TelescopeBorder = {
---       bg = c.bg_dark,
---       fg = c.bg_dark,
---     }
---     hl.TelescopePromptNormal = {
---       bg = prompt,
---     }
---     hl.TelescopePromptBorder = {
---       bg = prompt,
---       fg = prompt,
---     }
---     hl.TelescopePromptTitle = {
---       bg = prompt,
---       fg = prompt,
---     }
---     hl.TelescopePreviewTitle = {
---       bg = c.bg_dark,
---       fg = c.bg_dark,
---     }
---     hl.TelescopeResultsTitle = {
---       bg = c.bg_dark,
---       fg = c.bg_dark,
---     }
---   end,
---     -- use the night style
---   style = "moon",
---   -- disable italic for functions
---   styles = {
---     functions = { "transparent" },
---   },
---   -- Change the "hint" color to the "orange" color, and make the "error" color bright red
---   on_colors = function(colors)
---     colors.hint = colors.orange
---     colors.error = "#ff0000"
---   end,
--- })
---
-
--- nterm
---
--- require("nvchad.term").new { pos = "vsp", cmd = "neofetch", size = 0.3 }
--- require("nvchad.term").toggle({ pos = "float", id = "floatTerm", float_opts = {
---       border = "double",
---   }})
-
 
 local autocmd = vim.api.nvim_create_autocmd
 
