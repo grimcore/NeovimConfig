@@ -16,8 +16,8 @@ end, { desc = "Close all buffers" })
 
 
 -- save and quit
-map({"n", "v", "t"}, "<leader>q", ":q<CR>")
-map({"n", "v", "t"}, "<leader>qa", ":qa<CR>")
+map({"n", "v"}, "<leader>q", ":q<CR>")
+map({"n", "v"}, "<leader>qa", ":qa<CR>")
 map({"n", "v"}, "<leader>wq", ":wq<CR>")
 map({"n", "v"}, "<leader>w", ":w<CR>")
 map({"n", "v"}, "<leader>W", ":w!<CR>")
@@ -35,10 +35,16 @@ map("n", "<leader>llv", ":vsplit | terminal ollama run llama3<CR>i")
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
 -- toggle terminal 
-map({ "n", "t" }, "<leader>v", function()
+map({ "n" }, "<leader>v", function()
   require("nvchad.term").toggle { pos = "vsp", id = "verticalTerm" }
 end, { desc = "Terminal Toggle vertical term" })
-map({ "n", "t" }, "<leader>h", function()
+map({ "t" }, "<leader><leader>v", function()
+  require("nvchad.term").toggle { pos = "vsp", id = "verticalTerm" }
+end, { desc = "Terminal Toggle vertical term" })
+map({ "n" }, "<leader>h", function()
+  require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
+end, { desc = "Terminal Toggle horizontal term" })
+map({ "t" }, "<leader><leader>h", function()
   require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
 end, { desc = "Terminal Toggle horizontal term" })
 
