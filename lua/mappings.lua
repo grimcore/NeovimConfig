@@ -49,4 +49,4 @@ map({ "t" }, "<leader><leader>h", function()
 end, { desc = "Terminal Toggle horizontal term" })
 
 -- toggle ntree
-map({ "n", "t", "v" }, "<leader>n", ":NvimTreeToggle<CR>")
+map({ "n", "v" }, "<leader>n", ":NvimTreeToggle<CR>")
