@@ -70,6 +70,7 @@ return {
       vim.keymap.set('i', '<C-.>', function() return vim.fn['codeium#Complete']() end, { expr = true, silent = true })
     end
   },
+
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {},
