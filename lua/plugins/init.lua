@@ -70,6 +70,7 @@ return {
       vim.keymap.set('i', '<C-.>', function() return vim.fn['codeium#Complete']() end, { expr = true, silent = true })
     end
   },
+
   {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {},
@@ -78,6 +79,7 @@ return {
     -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
     lazy = false,
   },
+
   {
     'nvim-tree/nvim-web-devicons',
   },

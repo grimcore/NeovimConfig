@@ -27,10 +27,10 @@ map({ "n", "i", "v", "t" }, "<C-`>", function()
   require("base46").toggle_transparency()
 end, { desc = "Toggle transparency" })
 
--- open a terminalwindow vertically and use the command "ollama run llam3" and insert 
-map("n", "<leader>ll", ":terminal ollama run llama3<CR>i")
-map("n", "<leader>llh", ":split | terminal ollama run llama3<CR>i")
-map("n", "<leader>llv", ":vsplit | terminal ollama run llama3<CR>i")
+-- -- open a terminalwindow vertically and use the command "ollama run llam3" and insert 
+-- map("n", "<leader>ll", ":terminal ollama run llama3<CR>i")
+-- map("n", "<leader>llh", ":split | terminal ollama run llama3<CR>i")
+-- map("n", "<leader>llv", ":vsplit | terminal ollama run llama3<CR>i")
 
 map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
