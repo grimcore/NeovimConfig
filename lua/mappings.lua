@@ -4,8 +4,12 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
-map("n", "j", "gjzz")
-map("n", "k", "gkzz")
+map({"n", "v"}, "j", "gjzz")
+map({"n", "v"}, "k", "gkzz")
+map("i", "<c-h>", "<left>")
+map("i", "<c-j>", "<down>")
+map("i", "<c-k>", "<up>")
+map("i", "<c-l>", "<right>")
 map("n", ";", ":", { desc = "CMD enter command mode" })
 map("i", "jk", "<ESC>")
 map("i", "kj", "<ESC>")

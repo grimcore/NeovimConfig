@@ -2,12 +2,12 @@
 -- https://github.com/NvChad/ui/blob/v2.5/lua/nvconfig.lua
 
 ---@type ChadrcConfig
-local M = {}
-
-M.base46 = {
+local M = {
+  ui = {
 	theme = "catppuccin",
-  -- make backround transparent
-  transparency = true,
+  telescope = {
+      style = 'bordered',
+    },
 
 	hl_override = {
 		Comment = { italic = true },
@@ -15,24 +15,33 @@ M.base46 = {
 	},
   tabufline = {
     --  more opts
-    order = { "treeOffset", "buffers", "tabs", "btns", 'abc' },
+    order = { "treeOffset", "buffers", "tabs", "btns" },
     modules = {
       -- You can add your custom component
-      abc = function()
-        return "hi"
-      end,
     }
   },
 
   statusline = {
     -- more opts
-    order = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd", "cursor" }, -- check stl/utils.lua file in ui repo 
+    order = { "mode", "file", "git", "%=", "lsp_msg", "%=", "diagnostics", "lsp", "cwd" }, -- check stl/utils.lua file in ui repo 
     modules = {
       -- The default cursor module is override
       cursor = function()
         return "%#BruhHl#" .. " bruh " -- the highlight group here is BruhHl,
       end
-    }
+    },
+    -- Separator style and theme
+    theme = "minimal", -- default, vscode, vscode_colored or minimal
+    -- default, round, block, and arrow are supported only by the default statusline theme.
+    -- the round and block separators are also supported by the minimal theme.
+    separator_style = "round", -- default, round, block or arrow
+  }
+  },
+
+  base46 = {
+    -- make backround transparent
+    transparency = false,
+
   }
 }
 

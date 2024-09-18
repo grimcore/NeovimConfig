@@ -84,8 +84,6 @@ prettier.setup({
     "less",
     "markdown",
     "scss",
-    "typescript",
-    "typescriptreact",
     "yaml",
     "swift",
   },
