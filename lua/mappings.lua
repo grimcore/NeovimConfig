@@ -42,13 +42,13 @@ map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 map({ "n" }, "<leader>v", function()
   require("nvchad.term").toggle { pos = "vsp", id = "verticalTerm" }
 end, { desc = "Terminal Toggle vertical term" })
-map({ "t" }, "<leader><leader>v", function()
+map({ "t" }, "<c-v>", function()
   require("nvchad.term").toggle { pos = "vsp", id = "verticalTerm" }
 end, { desc = "Terminal Toggle vertical term" })
 map({ "n" }, "<leader>h", function()
   require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
 end, { desc = "Terminal Toggle horizontal term" })
-map({ "t" }, "<leader><leader>h", function()
+map({ "t" }, "<c-h>", function()
   require("nvchad.term").toggle { pos = "sp", id = "horizontalTerm" }
 end, { desc = "Terminal Toggle horizontal term" })
 
