@@ -5,8 +5,8 @@ vim.g.mapleader = " "
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
 if not vim.loop.fs_stat(lazypath) then
-  local repo = "https://github.com/folke/lazy.nvim.git"
-  vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
+    local repo = "https://github.com/folke/lazy.nvim.git"
+    vim.fn.system { "git", "clone", "--filter=blob:none", repo, "--branch=stable", lazypath }
 end
 
 vim.opt.rtp:prepend(lazypath)
@@ -15,16 +15,17 @@ local lazy_config = require "configs.lazy"
 
 -- load plugins
 require("lazy").setup({
-  {
-    "NvChad/NvChad",
-    lazy = false,
-    branch = "v2.5",
-    import = "nvchad.plugins",
-    config = function() require "options"
-    end,
-  },
+    {
+        "NvChad/NvChad",
+        lazy = false,
+        branch = "v2.5",
+        import = "nvchad.plugins",
+        config = function()
+            require "options"
+        end,
+    },
 
-  { import = "plugins" },
+    { import = "plugins" },
 }, lazy_config)
 
 -- load theme
@@ -34,95 +35,95 @@ dofile(vim.g.base46_cache .. "statusline")
 require "nvchad.autocmds"
 
 vim.schedule(function()
-  require "mappings"
+    require "mappings"
 end)
 
-local null_ls = require("null-ls")
+local null_ls = require "null-ls"
 
 local group = vim.api.nvim_create_augroup("lsp_format_on_save", { clear = false })
 local event = "BufWritePre" -- or "BufWritePost"
 local async = event == "BufWritePost"
 
-null_ls.setup({
-  on_attach = function(client, bufnr)
-    if client.supports_method("textDocument/formatting") then
-      vim.keymap.set("n", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-      end, { buffer = bufnr, desc = "[lsp] format" })
+null_ls.setup {
+    on_attach = function(client, bufnr)
+        if client.supports_method "textDocument/formatting" then
+            vim.keymap.set("n", "<Leader>f", function()
+                vim.lsp.buf.format { bufnr = vim.api.nvim_get_current_buf() }
+            end, { buffer = bufnr, desc = "[lsp] format" })
 
-      -- format on save
-      vim.api.nvim_clear_autocmds({ buffer = bufnr, group = group })
-      vim.api.nvim_create_autocmd(event, {
-        buffer = bufnr,
-        group = group,
-        callback = function()
-          vim.lsp.buf.format({ bufnr = bufnr, async = async })
+            -- format on save
+            vim.api.nvim_clear_autocmds { buffer = bufnr, group = group }
+            vim.api.nvim_create_autocmd(event, {
+                buffer = bufnr,
+                group = group,
+                callback = function()
+                    vim.lsp.buf.format { bufnr = bufnr, async = async }
+                end,
+                desc = "[lsp] format on save",
+            })
+        end
+
+        if client.supports_method "textDocument/rangeFormatting" then
+            vim.keymap.set("x", "<Leader>f", function()
+                vim.lsp.buf.format { bufnr = vim.api.nvim_get_current_buf() }
+            end, { buffer = bufnr, desc = "[lsp] format" })
+        end
+    end,
+}
+
+local prettier = require "prettier"
+
+prettier.setup {
+    bin = "prettier", -- or `'prettierd'` (v0.23.3+)
+    filetypes = {
+        "css",
+        "graphql",
+        "html",
+        "javascript",
+        "javascriptreact",
+        "json",
+        "less",
+        "markdown",
+        "scss",
+        "yaml",
+        "swift",
+    },
+    ["null-ls"] = {
+        condition = function()
+            return prettier.config_exists {
+                -- if `false`, skips checking `package.json` for `"prettier"` key
+                check_package_json = true,
+            }
         end,
-        desc = "[lsp] format on save",
-      })
-    end
-
-    if client.supports_method("textDocument/rangeFormatting") then
-      vim.keymap.set("x", "<Leader>f", function()
-        vim.lsp.buf.format({ bufnr = vim.api.nvim_get_current_buf() })
-      end, { buffer = bufnr, desc = "[lsp] format" })
-    end
-  end,
-})
-
-local prettier = require("prettier")
-
-prettier.setup({
-  bin = 'prettier', -- or `'prettierd'` (v0.23.3+)
-  filetypes = {
-    "css",
-    "graphql",
-    "html",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "less",
-    "markdown",
-    "scss",
-    "yaml",
-    "swift",
-  },
-  ["null-ls"] = {
-    condition = function()
-      return prettier.config_exists({
-        -- if `false`, skips checking `package.json` for `"prettier"` key
-        check_package_json = true,
-      })
-    end,
-    runtime_condition = function(params)
-      -- return false to skip running prettier
-      return true
-    end,
-    timeout = 5000,
-  },
+        runtime_condition = function(params)
+            -- return false to skip running prettier
+            return true
+        end,
+        timeout = 5000,
+    },
     cli_options = {
-    arrow_parens = "always",
-    bracket_spacing = true,
-    bracket_same_line = false,
-    embedded_language_formatting = "auto",
-    end_of_line = "lf",
-    html_whitespace_sensitivity = "css",
-    -- jsx_bracket_same_line = false,
-    jsx_single_quote = false,
-    print_width = 80,
-    prose_wrap = "preserve",
-    quote_props = "as-needed",
-    semi = true,
-    single_attribute_per_line = false,
-    single_quote = false,
-    tab_width = 2,
-    trailing_comma = "es5",
-    use_tabs = false,
-    vue_indent_script_and_style = false,
-  },
-})
+        arrow_parens = "always",
+        bracket_spacing = true,
+        bracket_same_line = false,
+        embedded_language_formatting = "auto",
+        end_of_line = "lf",
+        html_whitespace_sensitivity = "css",
+        -- jsx_bracket_same_line = false,
+        jsx_single_quote = false,
+        print_width = 80,
+        prose_wrap = "preserve",
+        quote_props = "as-needed",
+        semi = true,
+        single_attribute_per_line = false,
+        single_quote = false,
+        tab_width = 4,
+        trailing_comma = "es5",
+        use_tabs = false,
+        vue_indent_script_and_style = true,
+    },
+}
 
-require('render-markdown').setup({
+require("render-markdown").setup {
     -- Whether Markdown should be rendered by default or not
     enabled = true,
     -- Maximum file size (in MB) that this plugin will attempt to render
@@ -136,7 +137,7 @@ require('render-markdown').setup({
     --  obsidian: mimic Obsidian UI
     --  lazy:     will attempt to stay up to date with LazyVim configuration
     --  none:     does nothing
-    preset = 'none',
+    preset = "none",
     -- Capture groups that get pulled from markdown
     markdown_query = [[
         (atx_heading [
@@ -182,12 +183,12 @@ require('render-markdown').setup({
     ]],
     -- The level of logs to write to file: vim.fn.stdpath('state') .. '/render-markdown.log'
     -- Only intended to be used for plugin development / debugging
-    log_level = 'error',
+    log_level = "error",
     -- Filetypes this plugin will run on
-    file_types = { 'markdown' },
+    file_types = { "markdown" },
     -- Vim modes that will show a rendered view of the markdown file
     -- All other modes will be uneffected by this plugin
-    render_modes = { 'n', 'c' },
+    render_modes = { "n", "c" },
     -- Set to avoid seeing warnings for conflicts in health check
     acknowledge_conflicts = false,
     anti_conceal = {
@@ -202,9 +203,9 @@ require('render-markdown').setup({
         -- Whether LaTeX should be rendered, mainly used for health check
         enabled = true,
         -- Executable used to convert latex formula to rendered unicode
-        converter = 'latex2text',
+        converter = "latex2text",
         -- Highlight for LaTeX blocks
-        highlight = 'RenderMarkdownMath',
+        highlight = "RenderMarkdownMath",
         -- Amount of empty lines above LaTeX blocks
         top_pad = 0,
         -- Amount of empty lines below LaTeX blocks
@@ -218,20 +219,20 @@ require('render-markdown').setup({
         -- Determines how the icon fills the available space:
         --  inline:  underlying '#'s are concealed resulting in a left aligned icon
         --  overlay: result is left padded with spaces to hide any additional '#'
-        position = 'overlay',
+        position = "overlay",
         -- Replaces '#+' of 'atx_h._marker'
         -- The number of '#' in the heading determines the 'level'
         -- The 'level' is used to index into the array using a cycle
-        icons = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
+        icons = { "󰲡 ", "󰲣 ", "󰲥 ", "󰲧 ", "󰲩 ", "󰲫 " },
         -- Added to the sign column if enabled
         -- The 'level' is used to index into the array using a cycle
-        signs = { '󰫎 ' },
+        signs = { "󰫎 " },
         -- Width of the heading background:
         --  block: width of the heading text
         --  full:  full width of the window
         -- Can also be an array of the above values in which case the 'level' is used
         -- to index into the array using a clamp
-        width = 'full',
+        width = "full",
         -- Amount of padding to add to the left of headings
         left_pad = 0,
         -- Amount of padding to add to the right of headings when width is 'block'
@@ -243,28 +244,28 @@ require('render-markdown').setup({
         -- Highlight the start of the border using the foreground highlight
         border_prefix = false,
         -- Used above heading for border
-        above = '▄',
+        above = "▄",
         -- Used below heading for border
-        below = '▀',
+        below = "▀",
         -- The 'level' is used to index into the array using a clamp
         -- Highlight for the heading icon and extends through the entire line
         backgrounds = {
-            'RenderMarkdownH1Bg',
-            'RenderMarkdownH2Bg',
-            'RenderMarkdownH3Bg',
-            'RenderMarkdownH4Bg',
-            'RenderMarkdownH5Bg',
-            'RenderMarkdownH6Bg',
+            "RenderMarkdownH1Bg",
+            "RenderMarkdownH2Bg",
+            "RenderMarkdownH3Bg",
+            "RenderMarkdownH4Bg",
+            "RenderMarkdownH5Bg",
+            "RenderMarkdownH6Bg",
         },
         -- The 'level' is used to index into the array using a clamp
         -- Highlight for the heading and sign icons
         foregrounds = {
-            'RenderMarkdownH1',
-            'RenderMarkdownH2',
-            'RenderMarkdownH3',
-            'RenderMarkdownH4',
-            'RenderMarkdownH5',
-            'RenderMarkdownH6',
+            "RenderMarkdownH1",
+            "RenderMarkdownH2",
+            "RenderMarkdownH3",
+            "RenderMarkdownH4",
+            "RenderMarkdownH5",
+            "RenderMarkdownH6",
         },
     },
     code = {
@@ -277,18 +278,18 @@ require('render-markdown').setup({
         --  normal:   adds highlight group to code blocks & inline code, adds padding to code blocks
         --  language: adds language icon to sign column if enabled and icon + name above code blocks
         --  full:     normal + language
-        style = 'full',
+        style = "full",
         -- Determines where language icon is rendered:
         --  right: right side of code block
         --  left:  left side of code block
-        position = 'left',
+        position = "left",
         -- An array of language names for which background highlighting will be disabled
         -- Likely because that language has background highlights itself
-        disable_background = { 'diff' },
+        disable_background = { "diff" },
         -- Width of the code block background:
         --  block: width of the code block
         --  full:  full width of the window
-        width = 'full',
+        width = "full",
         -- Amount of padding to add to the left of code blocks
         left_pad = 0,
         -- Amount of padding to add to the right of code blocks when width is 'block'
@@ -298,28 +299,28 @@ require('render-markdown').setup({
         -- Determins how the top / bottom of code block are rendered:
         --  thick: use the same highlight as the code body
         --  thin:  when lines are empty overlay the above & below icons
-        border = 'thin',
+        border = "thin",
         -- Used above code blocks for thin border
-        above = '▄',
+        above = "▄",
         -- Used below code blocks for thin border
-        below = '▀',
+        below = "▀",
         -- Highlight for code blocks
-        highlight = 'RenderMarkdownCode',
+        highlight = "RenderMarkdownCode",
         -- Highlight for inline code
-        highlight_inline = 'RenderMarkdownCodeInline',
+        highlight_inline = "RenderMarkdownCodeInline",
     },
     dash = {
         -- Turn on / off thematic break rendering
         enabled = true,
         -- Replaces '---'|'***'|'___'|'* * *' of 'thematic_break'
         -- The icon gets repeated across the window's width
-        icon = '─',
+        icon = "─",
         -- Width of the generated line:
         --  <integer>: a hard coded width value
         --  full:      full width of the window
-        width = 'full',
+        width = "full",
         -- Highlight for the whole line generated from the icon
-        highlight = 'RenderMarkdownDash',
+        highlight = "RenderMarkdownDash",
     },
     bullet = {
         -- Turn on / off list bullet rendering
@@ -328,13 +329,13 @@ require('render-markdown').setup({
         -- How deeply nested the list is determines the 'level'
         -- The 'level' is used to index into the array using a cycle
         -- If the item is a 'checkbox' a conceal is used to hide the bullet instead
-        icons = { '●', '○', '◆', '◇' },
+        icons = { "●", "○", "◆", "◇" },
         -- Padding to add to the left of bullet point
         left_pad = 0,
         -- Padding to add to the right of bullet point
         right_pad = 0,
         -- Highlight for the bullet icon
-        highlight = 'RenderMarkdownBullet',
+        highlight = "RenderMarkdownBullet",
     },
     -- Checkboxes are a special instance of a 'list_item' that start with a 'shortcut_link'
     -- There are two special states for unchecked & checked defined in the markdown grammar
@@ -343,15 +344,15 @@ require('render-markdown').setup({
         enabled = true,
         unchecked = {
             -- Replaces '[ ]' of 'task_list_marker_unchecked'
-            icon = '󰄱 ',
+            icon = "󰄱 ",
             -- Highlight for the unchecked icon
-            highlight = 'RenderMarkdownUnchecked',
+            highlight = "RenderMarkdownUnchecked",
         },
         checked = {
             -- Replaces '[x]' of 'task_list_marker_checked'
-            icon = '󰱒 ',
+            icon = "󰱒 ",
             -- Highligh for the checked icon
-            highlight = 'RenderMarkdownChecked',
+            highlight = "RenderMarkdownChecked",
         },
         -- Define custom checkbox states, more involved as they are not part of the markdown grammar
         -- As a result this requires neovim >= 0.10.0 since it relies on 'inline' extmarks
@@ -361,14 +362,14 @@ require('render-markdown').setup({
         --   'rendered':  Replaces the 'raw' value when rendering
         --   'highlight': Highlight for the 'rendered' icon
         custom = {
-            todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo' },
+            todo = { raw = "[-]", rendered = "󰥔 ", highlight = "RenderMarkdownTodo" },
         },
     },
     quote = {
         -- Turn on / off block quote & callout rendering
         enabled = true,
         -- Replaces '>' of 'block_quote'
-        icon = '▋',
+        icon = "▋",
         -- Whether to repeat icon on wrapped lines. Requires neovim >= 0.10. This will obscure text if
         -- not configured correctly with :h 'showbreak', :h 'breakindent' and :h 'breakindentopt'. A
         -- combination of these that is likely to work is showbreak = '  ' (2 spaces), breakindent = true,
@@ -376,7 +377,7 @@ require('render-markdown').setup({
         -- to avoid adding these to your main configuration then set them in win_options for this plugin.
         repeat_linebreak = false,
         -- Highlight for the quote icon
-        highlight = 'RenderMarkdownQuote',
+        highlight = "RenderMarkdownQuote",
     },
     pipe_table = {
         -- Turn on / off pipe table rendering
@@ -386,34 +387,34 @@ require('render-markdown').setup({
         --  double: use double line border characters
         --  round:  use round border corners
         --  none:   does nothing
-        preset = 'none',
+        preset = "none",
         -- Determines how the table as a whole is rendered:
         --  none:   disables all rendering
         --  normal: applies the 'cell' style rendering to each row of the table
         --  full:   normal + a top & bottom line that fill out the table when lengths match
-        style = 'full',
+        style = "full",
         -- Determines how individual cells of a table are rendered:
         --  overlay: writes completely over the table, removing conceal behavior and highlights
         --  raw:     replaces only the '|' characters in each row, leaving the cells unmodified
         --  padded:  raw + cells are padded with inline extmarks to make up for any concealed text
-        cell = 'padded',
+        cell = "padded",
         -- Gets placed in delimiter row for each column, position is based on alignmnet
-        alignment_indicator = '━',
-        -- Characters used to replace table border
-        -- Correspond to top(3), delimiter(3), bottom(3), vertical, & horizontal
-        -- stylua: ignore
-        border = {
-            '┌', '┬', '┐',
-            '├', '┼', '┤',
-            '└', '┴', '┘',
-            '│', '─',
-        },
+        alignment_indicator = "━",
+    -- Characters used to replace table border
+    -- Correspond to top(3), delimiter(3), bottom(3), vertical, & horizontal
+    -- stylua: ignore
+    border = {
+      '┌', '┬', '┐',
+      '├', '┼', '┤',
+      '└', '┴', '┘',
+      '│', '─',
+    },
         -- Highlight for table heading, delimiter, and the line above
-        head = 'RenderMarkdownTableHead',
+        head = "RenderMarkdownTableHead",
         -- Highlight for everything else, main table rows and the line below
-        row = 'RenderMarkdownTableRow',
+        row = "RenderMarkdownTableRow",
         -- Highlight for inline padding used to add back concealed space
-        filler = 'RenderMarkdownTableFill',
+        filler = "RenderMarkdownTableFill",
     },
     -- Callouts are a special instance of a 'block_quote' that start with a 'shortcut_link'
     -- Can specify as many additional values as you like following the pattern from any below, such as 'note'
@@ -422,31 +423,31 @@ require('render-markdown').setup({
     --   'rendered':  Replaces the 'raw' value when rendering
     --   'highlight': Highlight for the 'rendered' text and quote markers
     callout = {
-        note = { raw = '[!NOTE]', rendered = '󰋽 Note', highlight = 'RenderMarkdownInfo' },
-        tip = { raw = '[!TIP]', rendered = '󰌶 Tip', highlight = 'RenderMarkdownSuccess' },
-        important = { raw = '[!IMPORTANT]', rendered = '󰅾 Important', highlight = 'RenderMarkdownHint' },
-        warning = { raw = '[!WARNING]', rendered = '󰀪 Warning', highlight = 'RenderMarkdownWarn' },
-        caution = { raw = '[!CAUTION]', rendered = '󰳦 Caution', highlight = 'RenderMarkdownError' },
+        note = { raw = "[!NOTE]", rendered = "󰋽 Note", highlight = "RenderMarkdownInfo" },
+        tip = { raw = "[!TIP]", rendered = "󰌶 Tip", highlight = "RenderMarkdownSuccess" },
+        important = { raw = "[!IMPORTANT]", rendered = "󰅾 Important", highlight = "RenderMarkdownHint" },
+        warning = { raw = "[!WARNING]", rendered = "󰀪 Warning", highlight = "RenderMarkdownWarn" },
+        caution = { raw = "[!CAUTION]", rendered = "󰳦 Caution", highlight = "RenderMarkdownError" },
         -- Obsidian: https://help.a.md/Editing+and+formatting/Callouts
-        abstract = { raw = '[!ABSTRACT]', rendered = '󰨸 Abstract', highlight = 'RenderMarkdownInfo' },
-        todo = { raw = '[!TODO]', rendered = '󰗡 Todo', highlight = 'RenderMarkdownInfo' },
-        success = { raw = '[!SUCCESS]', rendered = '󰄬 Success', highlight = 'RenderMarkdownSuccess' },
-        question = { raw = '[!QUESTION]', rendered = '󰘥 Question', highlight = 'RenderMarkdownWarn' },
-        failure = { raw = '[!FAILURE]', rendered = '󰅖 Failure', highlight = 'RenderMarkdownError' },
-        danger = { raw = '[!DANGER]', rendered = '󱐌 Danger', highlight = 'RenderMarkdownError' },
-        bug = { raw = '[!BUG]', rendered = '󰨰 Bug', highlight = 'RenderMarkdownError' },
-        example = { raw = '[!EXAMPLE]', rendered = '󰉹 Example', highlight = 'RenderMarkdownHint' },
-        quote = { raw = '[!QUOTE]', rendered = '󱆨 Quote', highlight = 'RenderMarkdownQuote' },
+        abstract = { raw = "[!ABSTRACT]", rendered = "󰨸 Abstract", highlight = "RenderMarkdownInfo" },
+        todo = { raw = "[!TODO]", rendered = "󰗡 Todo", highlight = "RenderMarkdownInfo" },
+        success = { raw = "[!SUCCESS]", rendered = "󰄬 Success", highlight = "RenderMarkdownSuccess" },
+        question = { raw = "[!QUESTION]", rendered = "󰘥 Question", highlight = "RenderMarkdownWarn" },
+        failure = { raw = "[!FAILURE]", rendered = "󰅖 Failure", highlight = "RenderMarkdownError" },
+        danger = { raw = "[!DANGER]", rendered = "󱐌 Danger", highlight = "RenderMarkdownError" },
+        bug = { raw = "[!BUG]", rendered = "󰨰 Bug", highlight = "RenderMarkdownError" },
+        example = { raw = "[!EXAMPLE]", rendered = "󰉹 Example", highlight = "RenderMarkdownHint" },
+        quote = { raw = "[!QUOTE]", rendered = "󱆨 Quote", highlight = "RenderMarkdownQuote" },
     },
     link = {
         -- Turn on / off inline link icon rendering
         enabled = true,
         -- Inlined with 'image' elements
-        image = '󰥶 ',
+        image = "󰥶 ",
         -- Fallback icon for 'inline_link' elements
-        hyperlink = '󰌹 ',
+        hyperlink = "󰌹 ",
         -- Applies to the fallback inlined icon
-        highlight = 'RenderMarkdownLink',
+        highlight = "RenderMarkdownLink",
         -- Define custom destination patterns so icons can quickly inform you of what a link
         -- contains. Applies to 'inline_link' and wikilink nodes.
         -- Can specify as many additional values as you like following the 'web' pattern below
@@ -455,30 +456,30 @@ require('render-markdown').setup({
         --   'icon':      Gets inlined before the link text
         --   'highlight': Highlight for the 'icon'
         custom = {
-            web = { pattern = '^http[s]?://', icon = '󰖟 ', highlight = 'RenderMarkdownLink' },
+            web = { pattern = "^http[s]?://", icon = "󰖟 ", highlight = "RenderMarkdownLink" },
         },
     },
     sign = {
         -- Turn on / off sign rendering
         enabled = true,
         -- Applies to background of sign text
-        highlight = 'RenderMarkdownSign',
+        highlight = "RenderMarkdownSign",
     },
     -- Window options to use that change between rendered and raw view
     win_options = {
         -- See :h 'conceallevel'
         conceallevel = {
             -- Used when not being rendered, get user setting
-            default = vim.api.nvim_get_option_value('conceallevel', {}),
+            default = vim.api.nvim_get_option_value("conceallevel", {}),
             -- Used when being rendered, concealed text is completely hidden
             rendered = 3,
         },
         -- See :h 'concealcursor'
         concealcursor = {
             -- Used when not being rendered, get user setting
-            default = vim.api.nvim_get_option_value('concealcursor', {}),
+            default = vim.api.nvim_get_option_value("concealcursor", {}),
             -- Used when being rendered, disable concealing text in all modes
-            rendered = '',
+            rendered = "",
         },
     },
     -- More granular configuration mechanism, allows different aspects of buffers
@@ -497,33 +498,32 @@ require('render-markdown').setup({
     -- Mapping from treesitter language to user defined handlers
     -- See 'Custom Handlers' document for more info
     custom_handlers = {},
-})
+}
 
--- display relative line numbers 
+-- display relative line numbers
 vim.opt.relativenumber = true
 
 local autocmd = vim.api.nvim_create_autocmd
 
 autocmd("VimEnter", {
-  command = ":silent !kitty @ set-spacing padding=0 margin=0",
+    command = ":silent !kitty @ set-spacing padding=0 margin=0",
 })
 
 autocmd("VimLeavePre", {
-  command = ":silent !kitty @ set-spacing padding=20 margin=10",
+    command = ":silent !kitty @ set-spacing padding=20 margin=10",
 })
 
 autocmd("BufReadPost", {
-  pattern = "*",
-  callback = function()
-    local line = vim.fn.line "'\""
-    if
-      line > 1
-      and line <= vim.fn.line "$"
-      and vim.bo.filetype ~= "commit"
-      and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
-    then
-      vim.cmd 'normal! g`"'
-    end
-  end,
+    pattern = "*",
+    callback = function()
+        local line = vim.fn.line "'\""
+        if
+            line > 1
+            and line <= vim.fn.line "$"
+            and vim.bo.filetype ~= "commit"
+            and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
+        then
+            vim.cmd 'normal! g`"'
+        end
+    end,
 })
-
