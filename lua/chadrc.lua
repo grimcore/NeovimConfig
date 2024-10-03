@@ -4,7 +4,6 @@
 ---@type ChadrcConfig
 local M = {
   ui = {
-	theme = "catppuccin",
   telescope = {
       style = 'bordered',
     },
@@ -39,6 +38,7 @@ local M = {
   },
 
   base46 = {
+    theme = "catppuccin",
     -- make backround transparent
     transparency = false,
 
