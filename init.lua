@@ -502,6 +502,8 @@ require("render-markdown").setup {
 
 -- display relative line numbers
 vim.opt.relativenumber = true
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 
 local autocmd = vim.api.nvim_create_autocmd
 
