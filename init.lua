@@ -159,8 +159,10 @@ autocmd("BufReadPost", {
     end,
 })
 
-vim.api.nvim_set_hl(0, "Comment", {
-  fg = "#ffffff",
-  italic = true,
-  bold = true,
+------< info :h nvim_set_hl >------
+vim.api.nvim_set_hl(0, "comment", {
+    fg = "#ffffff",
+    bg = "#bd93f9",
+    italic = true,
+    bold = true,
 })
