@@ -4,14 +4,13 @@
 ---@type ChadrcConfig
 local M = {
     base46 = {
-        theme = "catppuccin",
+        theme = "chadracula-evondev",
         hl_add = {},
         hl_override = {
             Comment = { italic = true },
             ["@comment"] = { italic = true },
         },
         transparency = false,
-        theme_toggle = { "catppuccin", "catppuccin" },
     },
 
     ui = {
@@ -30,7 +29,7 @@ local M = {
             order = { "oneSpace", "mode", "file", "git", "%=", "lsp_msg", "%=", "lsp", "oneSpace", "cwd", "oneSpace" },
             modules = {
                 oneSpace = " ",
-                twoSpace =  "  ",
+                twoSpace = "  ",
             },
             -- Separator style and theme
             theme = "minimal", -- default, vscode, vscode_colored or minimal
@@ -42,10 +41,9 @@ local M = {
         tabufline = {
             enabled = true,
             lazyload = true,
-            order = { "treeOffset", "buffers", "tabs", "btns"},
-            modules = { },
+            order = { "treeOffset", "buffers", "tabs" },
+            modules = {},
         },
-
     },
 
     nvdash = {
@@ -86,7 +84,7 @@ local M = {
         },
     },
 
-    lsp = { signature = true, },
+    lsp = { signature = true },
 
     cheatsheet = {
         theme = "grid", -- simple/grid
@@ -100,7 +98,7 @@ local M = {
             "html-lsp",
             "css-lsp",
             "prettier",
-        }
+        },
     },
 
     colorify = {
@@ -110,6 +108,5 @@ local M = {
         highlight = { hex = true, lspvars = true },
     },
 }
-
 
 return M
