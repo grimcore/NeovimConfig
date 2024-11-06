@@ -62,6 +62,21 @@ return {
     },
 
     {
+        "nvchad/ui",
+        config = function()
+            require "nvchad"
+        end,
+    },
+
+    {
+        "nvchad/base46",
+        lazy = true,
+        build = function()
+            require("base46").load_all_highlights()
+        end,
+    },
+
+    {
         "MunifTanjim/prettier.nvim",
         run = "npm install",
         requires = {
@@ -122,7 +137,7 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         opts = {
-            ensure_installed = { "html", "css", "bash" },
+            ensure_installed = { "html", "css", "bash", "lua", "vim" },
         },
     },
 

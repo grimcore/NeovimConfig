@@ -53,3 +53,13 @@ end, { desc = "Terminal Toggle horizontal term" })
 
 -- toggle ntree
 map({ "n", "v" }, "<leader>n", ":NvimTreeToggle<CR>")
+
+-- lsp rename variable
+map("n", "<leader>ra", function()
+    require "nvchad.lsp.renamer"()
+end, { desc = "LSP rename variable" })
+
+map("n", "<leader>th", function()
+    require("nvchad.themes").open { border = true }
+end, { desc = "pick theme" })
+
