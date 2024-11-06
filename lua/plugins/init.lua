@@ -109,19 +109,30 @@ return {
         end,
     },
 
+    -- this opts will extend the default opts
+    {
+        "nvim-treesitter/nvim-treesitter",
+        opts = {
+            ensure_installed = { "html", "css", "bash", "lua", "vim" },
+        },
+    },
+
+    { "echasnovski/mini.nvim", version = false },
+
+    { "nvim-tree/nvim-web-devicons" },
+
     {
         "MeanderingProgrammer/render-markdown.nvim",
-        opts = {},
         dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-        lazy = false,
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {},
     },
 
-    {
-        "nvim-tree/nvim-web-devicons",
-    },
     { "elkowar/yuck.vim", lazy = false }, -- load a plugin at startup
+
     { "folke/which-key.nvim", enabled = false },
 
     -- You can use any plugin specification from lazy.nvim
@@ -131,14 +142,6 @@ return {
         config = function()
             require "configs.truezen" -- just an example path
         end,
-    },
-
-    -- this opts will extend the default opts
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = {
-            ensure_installed = { "html", "css", "bash", "lua", "vim" },
-        },
     },
 
     -- If your opts uses a function call ex: require*, then make opts spec a function
