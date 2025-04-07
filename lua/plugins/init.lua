@@ -55,6 +55,7 @@ return {
 
     {
         "jose-elias-alvarez/null-ls.nvim",
+        lazy = true,
         config = function()
             require("null-ls").setup()
         end,
@@ -128,7 +129,9 @@ return {
         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
-        opts = {},
+        opts = {
+            render_modes = true,
+        },
     },
 
     { "elkowar/yuck.vim", lazy = false }, -- load a plugin at startup
@@ -188,8 +191,8 @@ return {
     },
     {
         "folke/tokyonight.nvim",
-        lazy = false,
+        lazy = true,
         priority = 1000,
-        opts = { style = "night" },
+        opts = require "configs.tokyonight",
     },
 }
