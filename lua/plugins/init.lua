@@ -1,210 +1,223 @@
 return {
-    {
-        "stevearc/conform.nvim",
-        -- event = 'BufWritePre', -- uncomment for format on save
-        config = function()
-            require "configs.conform"
+  -- add tokyonight
+  {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    opts = require("plugins.tokyonight"),
+  },
+
+  -- Configure LazyVim to load gruvbox
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "tokyonight",
+    },
+  },
+
+  -- change trouble config
+  {
+    "folke/trouble.nvim",
+    -- opts will be merged with the parent spec
+    opts = { use_diagnostic_signs = true },
+  },
+
+  -- disable trouble
+  { "folke/trouble.nvim", enabled = false },
+
+  -- override nvim-cmp and add cmp-emoji
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = { "hrsh7th/cmp-emoji" },
+    ---@param opts cmp.ConfigSchema
+    opts = function(_, opts)
+      table.insert(opts.sources, { name = "emoji" })
+    end,
+  },
+
+  -- change some telescope options and a keymap to browse plugin files
+  {
+    "nvim-telescope/telescope.nvim",
+    keys = {
+      -- add a keymap to browse plugin files
+      -- stylua: ignore
+      {
+        "<leader>fp",
+        function() require("telescope.builtin").find_files({ cwd = require("lazy.core.config").options.root }) end,
+        desc = "Find Plugin File",
+      },
+    },
+    -- change some options
+    opts = {
+      defaults = {
+        layout_strategy = "horizontal",
+        layout_config = { prompt_position = "top" },
+        sorting_strategy = "ascending",
+        winblend = 0,
+      },
+    },
+  },
+
+  -- add pyright to lspconfig
+  {
+    "neovim/nvim-lspconfig",
+    ---@class PluginLspOpts
+    opts = {
+      ---@type lspconfig.options
+      servers = {
+        -- pyright will be automatically installed with mason and loaded with lspconfig
+        pyright = {},
+      },
+    },
+  },
+
+  {
+    "nvim-lua/plenary.nvim",
+  },
+
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    lazy = true,
+    config = require("plugins.null-ls"),
+    requires = { "nvim-lua/plenary.nvim" },
+  },
+
+  {
+    "MunifTanjim/prettier.nvim",
+    config = require("plugins.prettier"),
+    run = "npm install",
+    requires = {
+      "neovim/nvim-lspconfig",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+  },
+
+  -- add tsserver and setup with typescript.nvim instead of lspconfig
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "jose-elias-alvarez/typescript.nvim",
+      init = function()
+        require("lazyvim.util").lsp.on_attach(function(_, buffer)
+          -- stylua: ignore
+          vim.keymap.set( "n", "<leader>co", "TypescriptOrganizeImports", { buffer = buffer, desc = "Organize Imports" })
+          vim.keymap.set("n", "<leader>cR", "TypescriptRenameFile", { desc = "Rename File", buffer = buffer })
+        end)
+      end,
+    },
+    ---@class PluginLspOpts
+    opts = {
+      ---@type lspconfig.options
+      servers = {
+        -- tsserver will be automatically installed with mason and loaded with lspconfig
+        tsserver = {},
+      },
+      -- you can do any additional lsp server setup here
+      -- return true if you don't want this server to be setup with lspconfig
+      ---@type table<string, fun(server:string, opts:_.lspconfig.options):boolean?>
+      setup = {
+        -- example to setup with typescript.nvim
+        tsserver = function(_, opts)
+          require("typescript").setup({ server = opts })
+          return true
         end,
+        -- Specify * to use this function as a fallback for any server
+        -- ["*"] = function(server, opts) end,
+      },
     },
+  },
 
-    -- These are some examples, uncomment them if you want to see them work!
-    {
-        "neovim/nvim-lspconfig",
-        config = function()
-            require("nvchad.configs.lspconfig").defaults()
-            require "configs.lspconfig"
+  -- for typescript, LazyVim also includes extra specs to properly setup lspconfig,
+  -- treesitter, mason and typescript.nvim. So instead of the above, you can use:
+  { import = "lazyvim.plugins.extras.lang.typescript" },
+
+  -- add more treesitter parsers
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "bash",
+        "html",
+        "javascript",
+        "json",
+        "lua",
+        "markdown",
+        "markdown_inline",
+        "python",
+        "query",
+        "regex",
+        "tsx",
+        "typescript",
+        "vim",
+        "yaml",
+      },
+    },
+  },
+
+  -- since `vim.tbl_deep_extend`, can only merge tables and not lists, the code above
+  -- would overwrite `ensure_installed` with the new value.
+  -- If you'd rather extend the default config, use the code below instead:
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(_, opts)
+      -- add tsx and treesitter
+      vim.list_extend(opts.ensure_installed, {
+        "tsx",
+        "typescript",
+      })
+    end,
+  },
+
+  -- the opts function can also be used to change the default opts:
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = function(_, opts)
+      table.insert(opts.sections.lualine_x, {
+        function()
+          return "😄"
         end,
+      })
+    end,
+  },
+
+  -- or you can return new options to override all the defaults
+  {
+    "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
+    opts = function()
+      return {
+        --[[add your custom lualine config here]]
+      }
+    end,
+  },
+
+  -- use mini.starter instead of alpha
+  { import = "lazyvim.plugins.extras.ui.mini-starter" },
+
+  -- add jsonls and schemastore packages, and setup treesitter for json, json5 and jsonc
+  { import = "lazyvim.plugins.extras.lang.json" },
+
+  -- add any tools you want to have installed below
+  {
+    "williamboman/mason.nvim",
+    opts = {
+      ensure_installed = {
+        "stylua",
+        "shellcheck",
+        "shfmt",
+        "flake8",
+      },
     },
-
-    {
-        "williamboman/mason.nvim",
-        opts = {
-            ensure_installed = {
-                "lua-language-server",
-                "stylua",
-                "html-lsp",
-                "css-lsp",
-                "prettier",
-            },
-        },
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {
+      render_modes = true,
     },
-
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = {
-            ensure_installed = {
-                "vim",
-                "lua",
-                "vimdoc",
-                "html",
-                "css",
-                "javascript",
-                "typescript",
-                "c",
-                "markdown",
-                "markdown_inline",
-                "bash",
-                "json",
-            },
-        },
-    },
-
-    {
-        "nvim-lua/plenary.nvim",
-    },
-
-    {
-        "jose-elias-alvarez/null-ls.nvim",
-        lazy = true,
-        config = function()
-            require("null-ls").setup()
-        end,
-        requires = { "nvim-lua/plenary.nvim" },
-    },
-
-    {
-        "nvchad/ui",
-        config = function()
-            require "nvchad"
-        end,
-    },
-
-    -- {
-    --     "nvchad/base46",
-    --     lazy = true,
-    --     build = function()
-    --         require("base46").load_all_highlights()
-    --     end,
-    -- },
-    --
-    {
-        "MunifTanjim/prettier.nvim",
-        run = "npm install",
-        requires = {
-            "neovim/nvim-lspconfig",
-            "jose-elias-alvarez/null-ls.nvim",
-        },
-    },
-
-    {
-        "Exafunction/codeium.vim",
-        event = "BufEnter",
-        config = function()
-            -- Change '<C-g>' here to any keycode you like.
-            vim.g.codeium_disable_bindings = 1 -- disable default bindings
-            vim.keymap.set("i", "<C-g>", function()
-                return vim.fn["codeium#Accept"]()
-            end, { expr = true, silent = true })
-            vim.keymap.set("i", "<C-;>", function()
-                return vim.fn["codeium#CycleCompletions"](1)
-            end, { expr = true, silent = true })
-            vim.keymap.set("i", "<C-,>", function()
-                return vim.fn["codeium#CycleCompletions"](-1)
-            end, { expr = true, silent = true })
-            vim.keymap.set("i", "<C-x>", function()
-                return vim.fn["codeium#Clear"]()
-            end, { expr = true, silent = true })
-            vim.keymap.set("i", "<C-.>", function()
-                return vim.fn["codeium#Complete"]()
-            end, { expr = true, silent = true })
-        end,
-    },
-
-    -- this opts will extend the default opts
-    {
-        "nvim-treesitter/nvim-treesitter",
-        opts = {
-            ensure_installed = { "html", "css", "bash", "lua", "vim" },
-        },
-    },
-
-    { "echasnovski/mini.nvim", version = false },
-
-    { "nvim-tree/nvim-web-devicons" },
-
-    {
-        "nvim-tree/nvim-tree.lua",
-        version = "*",
-        lazy = false,
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
-        config = function()
-            require("nvim-tree").setup {}
-        end,
-    },
-
-    {
-        "MeanderingProgrammer/render-markdown.nvim",
-        dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-        -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-        ---@module 'render-markdown'
-        ---@type render.md.UserConfig
-        opts = {
-            render_modes = true,
-        },
-    },
-
-    { "elkowar/yuck.vim", lazy = false }, -- load a plugin at startup
-
-    { "folke/which-key.nvim", enabled = false },
-
-    -- You can use any plugin specification from lazy.nvim
-    {
-        "Pocco81/TrueZen.nvim",
-        cmd = { "TZAtaraxis", "TZMinimalist" },
-        config = function()
-            require "configs.truezen" -- just an example path
-        end,
-    },
-
-    -- If your opts uses a function call ex: require*, then make opts spec a function
-    -- should return the modified default config as well
-    -- here we just call the default telescope config
-    -- And edit its mappinsg
-    {
-        "nvim-telescope/telescope.nvim",
-        opts = function()
-            local conf = require "nvchad.configs.telescope"
-            conf = require('configs.telescope')
-            -- conf.defaults.mappings.i = {
-            --     ["<C-j>"] = require("telescope.actions").move_selection_next,
-            --     ["<Esc>"] = require("telescope.actions").close,
-            -- }
-
-            -- or
-            -- table.insert(conf.defaults.mappings.i, your table)
-
-            return conf
-        end,
-    },
-
-    {
-        "folke/todo-comments.nvim",
-        dependencies = { "nvim-lua/plenary.nvim" },
-        lazy = false,
-        opts = {
-                keywords = {
-                    FIX = {
-                        icon = " ", -- icon used for the sign, and in search results
-                        color = "error", -- can be a hex color, or a named color (see below)
-                        alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
-                        -- signs = false, -- configure signs for some keywords individually
-                    },
-                    TODO = { icon = " ", color = "info" },
-                    HACK = { icon = " ", color = "warning" },
-                    WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-                    PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-                    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
-                    TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
-                },
-        },
-    },
-    {
-        "folke/tokyonight.nvim",
-        lazy = false,
-        priority = 1000,
-        opts = require "configs.tokyonight",
-    },
+  },
 }
