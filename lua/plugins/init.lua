@@ -1,4 +1,7 @@
+local lazy = require("lazy")
+
 return {
+  --
   -- add tokyonight
   {
     "folke/tokyonight.nvim",
@@ -69,28 +72,6 @@ return {
       },
     },
   },
-
-  {
-    "nvim-lua/plenary.nvim",
-  },
-
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    lazy = true,
-    config = require("plugins.null-ls"),
-    requires = { "nvim-lua/plenary.nvim" },
-  },
-
-  {
-    "MunifTanjim/prettier.nvim",
-    config = require("plugins.prettier"),
-    run = "npm install",
-    requires = {
-      "neovim/nvim-lspconfig",
-      "jose-elias-alvarez/null-ls.nvim",
-    },
-  },
-
   -- add tsserver and setup with typescript.nvim instead of lspconfig
   {
     "neovim/nvim-lspconfig",
@@ -184,15 +165,14 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    opts = function()
-      return {
-        --[[add your custom lualine config here]]
-      }
-    end,
+    opts = require("plugins.lualine"),
   },
 
   -- use mini.starter instead of alpha
-  { import = "lazyvim.plugins.extras.ui.mini-starter" },
+  {
+    "echasnovski/mini.nvim",
+    lazy = false,
+  },
 
   -- add jsonls and schemastore packages, and setup treesitter for json, json5 and jsonc
   { import = "lazyvim.plugins.extras.lang.json" },
@@ -218,6 +198,26 @@ return {
     ---@type render.md.UserConfig
     opts = {
       render_modes = true,
+    },
+  },
+
+  {
+    "nvim-lua/plenary.nvim",
+  },
+
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    lazy = true,
+    requires = { "nvim-lua/plenary.nvim" },
+  },
+
+  {
+    "MunifTanjim/prettier.nvim",
+    -- config = require("plugins.prettier"),
+    run = "npm install",
+    requires = {
+      "neovim/nvim-lspconfig",
+      "jose-elias-alvarez/null-ls.nvim",
     },
   },
 }
