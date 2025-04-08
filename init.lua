@@ -123,11 +123,12 @@ prettier.setup {
     },
 }
 
+
 require("mini.icons").setup()
 
 require("render-markdown").setup()
 --
--- require("render-markdown").enable()
+require("render-markdown").enable()
 
 -- display relative line numbers
 vim.opt.relativenumber = true
@@ -183,3 +184,4 @@ end, { desc = "Previous todo comment" })
 -- end, { desc = "Next error/warning todo comment" })
 
 vim.cmd [[colorscheme tokyonight]]
+

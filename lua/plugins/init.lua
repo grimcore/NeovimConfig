@@ -69,14 +69,14 @@ return {
         end,
     },
 
-    {
-        "nvchad/base46",
-        lazy = true,
-        build = function()
-            require("base46").load_all_highlights()
-        end,
-    },
-
+    -- {
+    --     "nvchad/base46",
+    --     lazy = true,
+    --     build = function()
+    --         require("base46").load_all_highlights()
+    --     end,
+    -- },
+    --
     {
         "MunifTanjim/prettier.nvim",
         run = "npm install",
@@ -123,6 +123,18 @@ return {
     { "nvim-tree/nvim-web-devicons" },
 
     {
+        "nvim-tree/nvim-tree.lua",
+        version = "*",
+        lazy = false,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
+        config = function()
+            require("nvim-tree").setup {}
+        end,
+    },
+
+    {
         "MeanderingProgrammer/render-markdown.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
         -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
@@ -155,11 +167,11 @@ return {
         "nvim-telescope/telescope.nvim",
         opts = function()
             local conf = require "nvchad.configs.telescope"
-
-            conf.defaults.mappings.i = {
-                ["<C-j>"] = require("telescope.actions").move_selection_next,
-                ["<Esc>"] = require("telescope.actions").close,
-            }
+            conf = require('configs.telescope')
+            -- conf.defaults.mappings.i = {
+            --     ["<C-j>"] = require("telescope.actions").move_selection_next,
+            --     ["<Esc>"] = require("telescope.actions").close,
+            -- }
 
             -- or
             -- table.insert(conf.defaults.mappings.i, your table)
@@ -173,25 +185,25 @@ return {
         dependencies = { "nvim-lua/plenary.nvim" },
         lazy = false,
         opts = {
-            --     keywords = {
-            --         FIX = {
-            --             icon = " ", -- icon used for the sign, and in search results
-            --             color = "error", -- can be a hex color, or a named color (see below)
-            --             alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
-            --             -- signs = false, -- configure signs for some keywords individually
-            --         },
-            --         TODO = { icon = " ", color = "info" },
-            --         HACK = { icon = " ", color = "warning" },
-            --         WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
-            --         PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-            --         NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
-            --         TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
-            --     },
+                keywords = {
+                    FIX = {
+                        icon = " ", -- icon used for the sign, and in search results
+                        color = "error", -- can be a hex color, or a named color (see below)
+                        alt = { "FIXME", "BUG", "FIXIT", "ISSUE" }, -- a set of other keywords that all map to this FIX keywords
+                        -- signs = false, -- configure signs for some keywords individually
+                    },
+                    TODO = { icon = " ", color = "info" },
+                    HACK = { icon = " ", color = "warning" },
+                    WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+                    PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+                    NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+                    TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+                },
         },
     },
     {
         "folke/tokyonight.nvim",
-        lazy = true,
+        lazy = false,
         priority = 1000,
         opts = require "configs.tokyonight",
     },

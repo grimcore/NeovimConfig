@@ -4,15 +4,15 @@
 ---@type ChadrcConfig
 
 local M = {
-    base46 = {
-        theme = "tokyodark",
-        hl_add = {},
-        hl_override = {
-            Comment = { italic = true },
-            ["@comment"] = { italic = true },
-        },
-        transparency = false,
-    },
+    -- base46 = {
+    --     theme = "L",
+    --     hl_add = {},
+    --     hl_override = {
+    --         Comment = { italic = true },
+    --         ["@comment"] = { italic = true },
+    --     },
+    --     transparency = false,
+    -- },
 
     ui = {
         -- cmp = {
@@ -23,7 +23,7 @@ local M = {
         --     }
         -- },
 
-        telescope = { style = "bordered" },
+        -- telescope = { style = "bordered" },
 
         statusline = {
             -- more opts
