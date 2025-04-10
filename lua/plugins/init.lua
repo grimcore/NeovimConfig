@@ -220,4 +220,8 @@ return {
       "jose-elias-alvarez/null-ls.nvim",
     },
   },
+  {
+    -- amongst your other plugins
+    { "akinsho/toggleterm.nvim", version = "*", config = require("config.toggleterm") },
+  },
 }

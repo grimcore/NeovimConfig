@@ -1,6 +1,8 @@
 -- bootstrap lazy.nvim, LazyVim and your plugins
 require("config.lazy")
 
+vim.g.clipboard = "osc52"
+
 ---------------------------------------------------------------------------------------
 ------------------------------- formatting setup---------------------------------------
 ---------------------------------------------------------------------------------------
@@ -94,7 +96,7 @@ prettier.setup({
 ---------------------------------------------------------------------------------------
 require("mini.icons").setup()
 
-require("render-markdown").setup()
+-- require("render-markdown").setup()
 --
 -- require("render-markdown").enable()
 
